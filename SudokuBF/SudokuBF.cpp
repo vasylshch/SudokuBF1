@@ -118,9 +118,9 @@ public:
 	}
 
 private:
-	std::array<mask_type, unit_size> rows{};		// bit array to signal presence of valid values on a row
-	std::array<mask_type, unit_size> columns{};		// bit array to signal presence of valid values on a column
-	std::array<mask_type, unit_size> subSquares{};	// bit array to signal presence of valid values in a subSquare
+	std::array<mask_type, unit_size> rows;			// bit array to signal presence of valid values on a row
+	std::array<mask_type, unit_size> columns;		// bit array to signal presence of valid values on a column
+	std::array<mask_type, unit_size> subSquares;	// bit array to signal presence of valid values in a subSquare
 
 	std::array<std::array<std::optional<value_type>, unit_size>, unit_size> values;	// unknown or value of each cell
 };
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
 	if (argc != 2)
 		return -1;
 
-	Field field{ argv[1] };
+	Field field{argv[1]};
 	int solutionCount = 0;
 	bruteForce(&field, 0, 0, &solutionCount);
 
