@@ -1,0 +1,11 @@
+
+constexpr template for getSubSquareCoor
+
+{0} vs = 0;
+
+member functions as constexpr?
+
+singlethreaded
+
+main that takes strField as param and return solutionCount
+
