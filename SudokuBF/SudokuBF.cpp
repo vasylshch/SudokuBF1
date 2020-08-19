@@ -13,7 +13,6 @@
 // brute force algo on finding all sudoku's solutions close to current one
 // sss_size - configurable compile time constant
 
-#include "pch.h"
 #include <iostream>
 #include <cassert>
 #include <bitset>

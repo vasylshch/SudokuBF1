@@ -7,5 +7,10 @@ member functions as constexpr?
 
 singlethreaded
 
-main that takes strField as param and return solutionCount
+
+build system: CMake?
+If you want you can reuse some pieces of https://github.com/mpusz/new-project-template.
+
+CI: Also it (https://github.com/mpusz/new-project-template) helps to setup and run Travis CI and Appveyor (or new GitHub action that I didn’t use yet). Again CMake helps to provide support for many compilers so you can check all of them in one CI run.
+
 
