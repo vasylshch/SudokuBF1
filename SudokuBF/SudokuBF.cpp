@@ -27,7 +27,8 @@ constexpr size_t field_size = unit_size * unit_size;	// total number of cells on
 using value_type = int;
 using coor_type = size_t;	// row, column and subsquare coordinates must be in range [0..unit_size)
 
-enum : value_type { MIN_VALUE = 5, MAX_VALUE = MIN_VALUE + unit_size - 1 };
+constexpr value_type MIN_VALUE = 5;
+constexpr value_type MAX_VALUE = MIN_VALUE + unit_size - 1;
 
 // valid values should be >= 0
 // mask_type should be big enough in order to hold 1 << MAX_VALUE
@@ -38,11 +39,11 @@ static_assert(MIN_VALUE <= MAX_VALUE);
 static_assert(mask_type{}.size() > MAX_VALUE);
 
 
-inline constexpr coor_type getSubSquareCoor(coor_type row, coor_type column) noexcept
+constexpr coor_type getSubSquareCoor(coor_type row, coor_type column) noexcept
 {
 	if constexpr (unit_size == 9)
 	{
-		constexpr std::array<std::array<char, 9>, 9> subSquareCoorUnit9
+		constexpr std::array<std::array<std::uint8_t, 9>, 9> subSquareCoorUnit9
 		{ {
 			{0, 0, 0, 1, 1, 1, 2, 2, 2},
 			{0, 0, 0, 1, 1, 1, 2, 2, 2},
@@ -68,7 +69,7 @@ class Field
 {
 public:
 	Field(void) = default;
-	Field(const std::string_view strField);
+	Field(std::string_view strField);
 
 	void setValue(coor_type row, coor_type column, value_type value)
 	{
@@ -125,7 +126,7 @@ private:
 };
 
 
-Field::Field(const std::string_view strField)
+Field::Field(std::string_view strField)
 {
 	// initially UNKNOWN_VALUE is set in all cells
 	// values are read till the first value that contradicts to rules
@@ -158,29 +159,28 @@ Field::Field(const std::string_view strField)
 }
 
 // strField should be at least field_size + 1 size
-void toCString(const Field *field, char *strField)
+void toCString(const Field& field, char *strField)
 {
-	size_t cell = 0;
 	for (coor_type row = 0; row < unit_size; ++row)
 		for (coor_type column = 0; column < unit_size; ++column)
 		{
-			if (!field->isKnown(row, column))
+			if (!field.isKnown(row, column))
 			{
 				// map UNKNOWN_VALUE to '0'
-				strField[cell++] = '0';
+				*strField++ = '0';
 			}
 			else
 			{
 				// map MIN_VALUE to '1' and so on...
-				strField[cell++] = static_cast<char>('1' + (field->getValue(row,column) - MIN_VALUE));
+				*strField++ = static_cast<char>('1' + (field.getValue(row,column) - MIN_VALUE));
 			}
 		}
 
-	strField[cell] = '\0';
+	*strField = '\0';
 }
 
 
-void printField(const Field *field)
+void printField(const Field& field)
 {
 	char strField[field_size + 1];
 	toCString(field, strField);
