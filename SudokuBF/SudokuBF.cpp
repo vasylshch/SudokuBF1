@@ -18,6 +18,7 @@
 #include <bitset>
 #include <array>
 #include <optional>
+#include <string>
 #include <string_view>
 
 constexpr size_t sss_size = 3;							// subsquare side size
@@ -27,7 +28,7 @@ constexpr size_t field_size = unit_size * unit_size;	// total number of cells on
 using value_type = int;
 using coor_type = size_t;	// row, column and subsquare coordinates must be in range [0..unit_size)
 
-constexpr value_type MIN_VALUE = 5;
+constexpr value_type MIN_VALUE = 1;	// could be any (non-negative) value
 constexpr value_type MAX_VALUE = MIN_VALUE + unit_size - 1;
 
 // valid values should be >= 0
@@ -158,38 +159,41 @@ Field::Field(std::string_view strField)
 	}
 }
 
-// strField should be at least field_size + 1 size
-void toCString(const Field& field, char *strField)
+
+std::string toString(const Field& field)
 {
+	std::string result;
+	result.resize(field_size);
+	size_t cell = 0;
 	for (coor_type row = 0; row < unit_size; ++row)
 		for (coor_type column = 0; column < unit_size; ++column)
 		{
 			if (!field.isKnown(row, column))
 			{
 				// map UNKNOWN_VALUE to '0'
-				*strField++ = '0';
+				result[cell++] = '0';
 			}
 			else
 			{
 				// map MIN_VALUE to '1' and so on...
-				*strField++ = static_cast<char>('1' + (field.getValue(row,column) - MIN_VALUE));
+				result[cell++] = static_cast<char>('1' + (field.getValue(row,column) - MIN_VALUE));
 			}
 		}
 
-	*strField = '\0';
+	return result;
 }
-
 
 void printField(const Field& field)
 {
-	char strField[field_size + 1];
-	toCString(field, strField);
-	std::cout << '\n' << strField << '\n';
+	std::cout << '\n' << toString(field) << '\n';
 }
 
 
-void bruteForce(Field *field, coor_type startRow, coor_type startColumn, int *solutionCount)
+void bruteForce_impl(Field *field, coor_type startRow, coor_type startColumn, int *solutionCount)
 {
+	assert(field);
+	assert(solutionCount);
+
 	for (coor_type row = startRow; row < unit_size; ++row)
 	{
 		for (coor_type column = (row == startRow) ? startColumn : 0; column < unit_size; ++column) // for each cell
@@ -206,7 +210,7 @@ void bruteForce(Field *field, coor_type startRow, coor_type startColumn, int *so
 					// valid to place this value in this cell
 					field->setValue(row, column, value);
 					// call this function recursively to fill in still unkown cells
-					bruteForce(field, row, column, solutionCount);
+					bruteForce_impl(field, row, column, solutionCount);
 					// remove current assumtion
 					field->removeValue(row, column, value);
 				}
@@ -218,15 +222,21 @@ void bruteForce(Field *field, coor_type startRow, coor_type startColumn, int *so
 	++(*solutionCount);
 }
 
+int bruteForce(std::string_view strField)
+{
+	Field field{ strField };
+	int solutionCount{ 0 };
+
+	bruteForce_impl(&field, 0, 0, &solutionCount);
+
+	return solutionCount;
+}
+
 
 int main(int argc, char *argv[])
 {
 	if (argc != 2)
 		return -1;
 
-	Field field{argv[1]};
-	int solutionCount = 0;
-	bruteForce(&field, 0, 0, &solutionCount);
-
-	return solutionCount;
+	return bruteForce(argv[1]);
 }

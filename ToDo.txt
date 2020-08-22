@@ -1,9 +1,7 @@
 
-constexpr template for getSubSquareCoor
+constexpr template for getSubSquareCoor?
 
-{0} vs = 0;
-
-member functions as constexpr?
+{0} vs = 0
 
 singlethreaded
 
