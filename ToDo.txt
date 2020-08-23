@@ -1,3 +1,4 @@
+To think on:
 
 constexpr template for getSubSquareCoor?
 
@@ -6,9 +7,46 @@ constexpr template for getSubSquareCoor?
 singlethreaded
 
 
+To do:
 build system: CMake?
 If you want you can reuse some pieces of https://github.com/mpusz/new-project-template.
 
 CI: Also it (https://github.com/mpusz/new-project-template) helps to setup and run Travis CI and Appveyor (or new GitHub action that I didn’t use yet). Again CMake helps to provide support for many compilers so you can check all of them in one CI run.
 
 
+Alternative design options:
+1.
+using mask_type = std::bitset<MAX_VALUE + 1>;
+vs
+using mask_type = std::array<bool, MAX_VALUE + 1>;
+
+2.
+std::optional<value_type>
+vs
+value_type + UNKNOWN_VALUE 
+
+3.
+void bruteForceImpl(Field *field, coor_type startRow, coor_type startColumn, int *solutionCount)
+vs
+void bruteForceImpl(Field &field, coor_type startRow, coor_type startColumn, int &solutionCount)
+
+4.
+int bruteForce(std::string_view strField)
+{
+	Field field{ strField };
+	int solutionCount{ 0 };
+
+	bruteForceImpl(&field, 0, 0, &solutionCount);
+
+	return solutionCount;
+}
+vs
+int bruteForce(const Field& field)
+{
+	Field fieldImpl{ field };
+	int solutionCount{ 0 };
+
+	bruteForceImpl(&fieldImpl, 0, 0, &solutionCount);
+
+	return solutionCount;
+}

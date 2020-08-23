@@ -189,7 +189,7 @@ void printField(const Field& field)
 }
 
 
-void bruteForce_impl(Field *field, coor_type startRow, coor_type startColumn, int *solutionCount)
+void bruteForceImpl(Field *field, coor_type startRow, coor_type startColumn, int *solutionCount)
 {
 	assert(field);
 	assert(solutionCount);
@@ -210,7 +210,7 @@ void bruteForce_impl(Field *field, coor_type startRow, coor_type startColumn, in
 					// valid to place this value in this cell
 					field->setValue(row, column, value);
 					// call this function recursively to fill in still unkown cells
-					bruteForce_impl(field, row, column, solutionCount);
+					bruteForceImpl(field, row, column, solutionCount);
 					// remove current assumtion
 					field->removeValue(row, column, value);
 				}
@@ -227,7 +227,7 @@ int bruteForce(std::string_view strField)
 	Field field{ strField };
 	int solutionCount{ 0 };
 
-	bruteForce_impl(&field, 0, 0, &solutionCount);
+	bruteForceImpl(&field, 0, 0, &solutionCount);
 
 	return solutionCount;
 }
