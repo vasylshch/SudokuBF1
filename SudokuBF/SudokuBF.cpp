@@ -151,7 +151,7 @@ Field::Field(std::string_view strField)
 			else
 			{
 				// asset here is just for indication that something is "wrong" with strField,
-				// so it is not "fully" handlded. Meanwhile field is still in "correct" state
+				// so it is not "fully" handled. Meanwhile field is still in "correct" state
 				assert(0);
 				return;
 			}
@@ -211,7 +211,7 @@ void bruteForceImpl(Field *field, coor_type startRow, coor_type startColumn, int
 					field->setValue(row, column, value);
 					// call this function recursively to fill in still unkown cells
 					bruteForceImpl(field, row, column, solutionCount);
-					// remove current assumtion
+					// remove current assumption
 					field->removeValue(row, column, value);
 				}
 				return;
@@ -236,7 +236,16 @@ int bruteForce(std::string_view strField)
 int main(int argc, char *argv[])
 {
 	if (argc != 2)
+	{
+		std::cerr<<"Single parameter is required: "<<unit_size<<"x"<<unit_size<<" sudoku puzzle as first argument (single string with "<<field_size<<" symbols)."<<std::endl;
 		return -1;
+	}
+	std::string_view strField(argv[1]);
+	if (strField.length() != field_size)
+	{
+		std::cerr<<"Invalid length of the first parameter: "<<unit_size<<"x"<<unit_size<<" sudoku puzzle is expected (single string with "<<field_size<<" symbols)."<<std::endl;
+		return -1;
+	}
 
-	return bruteForce(argv[1]);
+	return bruteForce(strField);
 }
